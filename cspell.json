@@ -1,0 +1,17 @@
+{
+  "version": "0.2",
+  "ignorePaths": [],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [],
+  "ignoreWords": [],
+  "import": [],
+  "languageSettings": [
+    {
+      "languageId": "python",
+      "allowCompoundWords": false,
+      "includeRegExpList": ["string", "CStyleComment"],
+      "ignoreRegExpList": ["import.*"]
+    }
+  ]
+}
