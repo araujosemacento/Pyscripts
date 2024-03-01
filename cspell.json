@@ -3,15 +3,23 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": [],
+  "words": [
+    "gemini",
+    "traducao"
+  ],
   "ignoreWords": [],
   "import": [],
   "languageSettings": [
     {
       "languageId": "python",
       "allowCompoundWords": false,
-      "includeRegExpList": ["string", "CStyleComment"],
-      "ignoreRegExpList": ["import.*"]
+      "includeRegExpList": [
+        "string",
+        "CStyleComment"
+      ],
+      "ignoreRegExpList": [
+        "import.*"
+      ]
     }
   ]
 }
