@@ -8,7 +8,7 @@ def analisar_sentimento(texto, lang="pt-BR"):
     tradutor = Translator(from_lang=f"{lang}", to_lang="en-US")
     traducao = tradutor.translate(texto)
     
-    #print(traducao)
+    #print(f"\n{traducao}\n")
     
     blob = TextBlob(traducao)
     
