@@ -5,6 +5,7 @@ import random
 
 partida = "em andamento"
 tentativas = 7
+inputs = []
 
 
 def escolherPalavra():
@@ -13,13 +14,17 @@ def escolherPalavra():
     return [tema, random.choice(opcoes["temas"][tema])]
 
 
-def checagem(tentativas, letra, palavra, statusDaPalavra):
+def checagem(tentativas, letra, inputs, palavra, statusDaPalavra):
     letra_minuscula = letra.lower()
     palavra_minuscula = palavra.lower()
+    if letra_minuscula not in inputs:
+        inputs.append(letra_minuscula)
+        inputs.sort()
+    print(f"\nLetras já inseridas: {inputs}")
     if letra_minuscula in palavra_minuscula:
         statusDaPalavra[letra_minuscula][0] = True
         letras_variantes = {
-            "a": ["á", "ã", "â", "ä"],
+            "a": ["á", "ã", "â", "ä", "à"],
             "e": ["é", "ê", "ë"],
             "i": ["í", "î", "ï"],
             "o": ["ó", "õ", "ô", "ö"],
@@ -32,32 +37,35 @@ def checagem(tentativas, letra, palavra, statusDaPalavra):
         }
         for variante in letras_variantes.get(letra_minuscula, []):
             if variante in palavra_minuscula:
+                print(variante)
                 statusDaPalavra[variante][0] = True
     else:
         tentativas -= 1
         print(f"Tentativas restantes: {tentativas}")
-    return tentativas
+    return [tentativas, inputs]
 
 
-def jogo(tentativas, partida):
+def jogo(tentativas, partida, inputs):
     [dica, palavra] = escolherPalavra()
-    print(dica, palavra)
     statusDaPalavra = {letra.lower(): [False] for letra in palavra}
     for chave in statusDaPalavra:
         if not chave.isalnum():
             statusDaPalavra[chave][0] = True
-    print(statusDaPalavra)
     while partida == "em andamento":
         retorno = ""
         while True:
-            retorno = input("digite uma letra se quiser salvá-lo: ")
+            retorno = input(f'''Dica: {dica}
+                            
+Digite uma letra ou numeral se quiser salvá-lo: ''')
             if len(retorno) == 0:
                 continue
             elif len(retorno) > 1:
-                print("digite apenas UMA letra\n")
+                print("Digite apenas UMA letra ou número.\n")
             else:
                 break
-        tentativas = checagem(tentativas, retorno, palavra, statusDaPalavra)
+        [tentativas, inputs] = checagem(
+            tentativas, retorno, inputs, palavra, statusDaPalavra
+        )
         print("\n")
         for letra in palavra:
             if statusDaPalavra[letra.lower()][0]:
@@ -66,60 +74,21 @@ def jogo(tentativas, partida):
                 print("\033[4m \033[0m", end="")
         print("\n")
         if all(statusDaPalavra[opcao][0] == True for opcao in statusDaPalavra):
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡴⠒⠋⠉⠭⠓⠲⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⡋⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⣀⠀⡼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠶⠛⠋⠁⠀⠀⠀⠁⠹⠝⠛⠢⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⢀⣴⠞⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⢨⠛⢦⣄⠀⠀⠀⠀⢀⡼⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⢀⡴⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠲⣌⠙⢦⣰⠿⠋⢀⣀⡠⠴⠶⠒⠚⣫⣽⣯⣉⡛⠒⠲⠶⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⢀⣴⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⣶⢻⣶⠚⠋⠁⠀⢀⣠⢤⣾⡿⠟⠛⠻⢿⣤⣀⣀⠀⠀⠉⠓⠢⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⢀⡞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣾⣧⠀⠚⠉⠉⠁⡿⠋⠀⠀⠀⠀⠈⠀⠀⠉⠛⠲⣤⢀⠀⢀⣽⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠒⠲⠦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠽⡇⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢹⠿⠻⢿⣿⣗⣆⠀⠀⠀⠀⠀⠀")
-            print("⢸⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡀⠀⠀⠀⢀⣠⣤⣂⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⠈⠳⡄⠀⠀⠀⠀")
-            print("⣸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠲⢄⡀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⢠⣿⠟⠉⠀⠈⠓⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠛⠀⠀⠙⣆⠀⠀⠀")
-            print("⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⢦⡀⠙⢦⡀⠀⠀⠀⠀⣼⠁⠀⠀⡾⠁⠀⣠⣀⡀⠀⠈⣧⠀⠀⠀⠀⣠⡴⠖⠦⣤⡀⠀⠀⠀⠀⠀⠘⣧⠀⠀")
-            print("⢿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⡀⠙⢦⡀⢀⡴⠃⠀⠀⢰⠃⢠⡞⠙⣿⣿⡆⠀⠸⡆⠀⠀⣼⠃⣅⣀⣀⠀⠉⢳⡄⠀⠀⠀⠀⠸⣆⠀")
-            print("⢸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠶⠤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⠀⢻⡉⠐⠓⠒⠤⢼⣀⢸⣿⣶⣿⣿⣿⠀⢀⡇⠀⠀⡇⣾⠛⢻⣿⣧⠀⠀⢹⡀⠀⠀⠀⠀⠹⡀")
-            print("⠘⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠲⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠣⠘⡇⠀⠀⠀⠀⠀⠈⠛⢿⣿⣬⣿⠃⠀⣼⠁⠀⠀⣷⣿⣷⣿⣿⣿⠀⠀⠀⣷⠀⠀⠀⠀⠀⡇")
-            print("⠀⠻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣇⣠⠤⣤⣀⡀⠀⠀⠀⠻⡉⠁⢀⡴⠁⠀⠀⠀⠘⣿⣿⣇⣿⡟⠀⠀⢂⡟⠀⠀⠀⠀⠀⠁")
-            print("⠀⠀⠹⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⡈⠻⣦⠀⠀⠀⠀⠀⠀⣠⠟⠁⠀⠀⠀⢻⡙⠂⠀⠀⠀⢹⠔⠋⠀⠀⠀⠀⠀⠀⠙⢎⡉⠁⢀⣠⠤⠾⠦⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠘⢦⡶⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢆⠈⢧⣀⣀⣠⡤⠞⠁⠀⠀⠀⠀⠀⠀⢻⣄⠄⠀⠀⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⠞⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠙⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡀⢸⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣷⢦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⣀⣤⣤⣀⠀⠀⠀⠀⠀⡀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠈⠙⠶⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣳⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠽⣿⣆⠈⠙⠲⠦⣄⣀⣀⣀⠀⠀⠀⠀⢀⣀⣈⡵⠞⠁⠈⠁⠀⠀⠀⢀⠇")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠓⠲⠤⠤⠤⠴⠖⠺⣏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢿⣿⣷⣄⠀⠀⠀⠀⠀⠉⠉⠉⣿⣿⠟⠉⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠾⡟⠻⢿⣷⣶⣤⣄⣀⣀⣤⣾⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠁⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣄⠀⠻⠿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡽⠃⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢷⣄⣘⣦⣿⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⢸⡿⠁⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠿⠿⠿⠿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠋⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠲⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠦⠖⠒⠀⠀⠀⠀⠀⠀⠀⣠⡴⠋⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡴⠞⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠲⠤⢤⣀⡀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠴⠷⠚⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Obrigado por me salvar, tmj meu consagrado!")
+            print(
+                """
+                  
+                  """
+            )
             partida = "ganha"
             break
         if tentativas <= 0:
-            print("⢻⢭⡓⣆⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣏⢖⡲⣅⠀⠀")
-            print("⣣⢾⡛⣜⢫⣦⠀⠀⢀⣤⠴⡦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣸⢏⡝⣆⢀")
-            print("⢿⣧⢹⣬⡷⣚⣒⣶⡾⣍⡞⡱⣞⡇⠀⠀⠀⠀⢀⣠⢤⠖⣦⡤⠤⡶⠦⠤⣤⢶⠲⠤⣄⠀⠀⠀⠀⠀⢀⡤⠶⢶⢤⡀⢸⣛⣮⢞⡜⡚")
-            print("⠈⡷⣻⢏⠶⣙⢶⣼⠟⡼⣜⡵⠋⠀⠀⠀⣠⠞⡩⢴⣿⣿⣾⣹⠐⢢⢁⡾⡵⠚⢻⣷⣤⡙⠲⢄⠀⠀⢾⣍⡻⣌⢧⣷⡾⡞⣥⢫⡝⣃")
-            print("⠀⢻⣿⢊⣟⣾⢫⢇⡻⣱⢺⠁⠀⠀⠀⡼⣡⣿⣄⣀⡿⣿⣿⡏⡇⢢⢸⡿⣷⣤⣼⠿⢿⣿⣷⣎⣷⠀⠈⠳⣵⡩⢖⡻⣱⢻⣌⡳⢎⡵")
-            print("⠀⠀⢻⡧⢞⡧⣋⣮⣕⡣⢿⠀⠀⢀⡼⢃⣻⢿⣿⣿⣧⠾⠟⡙⣧⣂⣌⢣⡛⡿⠿⠷⠾⠿⠿⠣⣌⠳⡀⢰⢯⡱⣫⡶⢥⣛⢮⡓⣏⢶")
-            print("⠀⠀⠈⢯⡧⣓⢧⡚⣽⣞⡾⠀⢀⡞⠠⣿⠀⡰⢂⣖⣤⣯⣾⣿⣿⣿⣿⣿⣿⣇⠄⣎⣱⣉⢎⡱⣘⡇⠹⡞⣮⢵⢯⣱⠳⡬⢧⡙⣦⠋")
-            print("⠀⠀⠀⠈⠳⣭⢲⡹⢲⡞⠁⠀⣼⢐⠡⡙⠳⠗⡛⣩⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⡁⡉⠛⣶⣵⠋⡐⢿⠈⠻⣆⢧⡛⢜⣣⠟⠁⠀")
-            print("⠀⠀⠀⠀⠀⠈⠉⠉⠁⠀⠀⢰⡇⢊⠔⡡⢊⠔⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡈⠡⣿⢹⡄⢡⢚⣇⠀⠈⠉⠉⠉⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⢊⠤⢑⠢⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⢹⠃⢢⢻⡄⢊⣏⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣇⠌⢢⠁⢎⣿⣿⣿⣿⣿⣿⣿⠿⠟⠿⢿⣿⣿⣿⣿⣿⣿⣏⡄⢣⢺⡇⢼⡋⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡊⠤⠉⢼⣿⣿⣿⣿⠿⠋⡄⠒⡌⢢⠐⡌⠻⣿⣿⣿⣿⣯⠛⢓⠛⣠⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⡘⡏⣿⣿⣿⡿⠋⡄⠣⠌⡱⢈⠄⢣⠐⡡⠘⢿⣿⣿⣿⡐⣌⢒⣰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡅⠸⠿⢛⡡⠘⡄⠣⡘⠄⠣⡘⠄⢣⠐⣉⠂⠻⢿⠿⠁⢼⡲⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⣁⠦⠟⡁⢣⠐⡡⠂⡍⠰⢁⠎⡄⠣⢄⡉⠲⢦⣂⣉⢴⠗⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⢲⢥⣂⠅⣂⠑⡈⢅⠊⡐⠌⢡⢂⣌⣡⠶⣛⣙⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
-            print("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Misericórdia, por favor!⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
+            print(
+                """
+                  
+                  """
+            )
             partida = "perdida"
             break
 
 
-jogo(tentativas, partida)
+jogo(tentativas, partida, inputs)
