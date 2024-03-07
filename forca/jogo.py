@@ -17,10 +17,6 @@ def escolherPalavra():
 def checagem(tentativas, letra, inputs, palavra, statusDaPalavra):
     letra_minuscula = letra.lower()
     palavra_minuscula = palavra.lower()
-    if letra_minuscula not in inputs:
-        inputs.append(letra_minuscula)
-        inputs.sort()
-    print(f"\nLetras já inseridas: {inputs}")
     if letra_minuscula in palavra_minuscula:
         statusDaPalavra[letra_minuscula][0] = True
         letras_variantes = {
@@ -39,9 +35,13 @@ def checagem(tentativas, letra, inputs, palavra, statusDaPalavra):
             if variante in palavra_minuscula:
                 print(variante)
                 statusDaPalavra[variante][0] = True
-    else:
+    elif letra_minuscula not in inputs:
+        inputs.append(letra_minuscula)
+        inputs.sort()
         tentativas -= 1
         print(f"Tentativas restantes: {tentativas}")
+        print(f"\nLetras já inseridas: {inputs}")
+
     return [tentativas, inputs]
 
 
@@ -54,9 +54,11 @@ def jogo(tentativas, partida, inputs):
     while partida == "em andamento":
         retorno = ""
         while True:
-            retorno = input(f'''Dica: {dica}
+            retorno = input(
+                f"""Dica: {dica}
                             
-Digite uma letra ou numeral se quiser salvá-lo: ''')
+Digite uma letra ou numeral se quiser salvá-lo: """
+            )
             if len(retorno) == 0:
                 continue
             elif len(retorno) > 1:
