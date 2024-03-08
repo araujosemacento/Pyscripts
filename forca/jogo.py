@@ -17,30 +17,41 @@ def escolherPalavra():
 def checagem(tentativas, letra, inputs, palavra, statusDaPalavra):
     letra_minuscula = letra.lower()
     palavra_minuscula = palavra.lower()
+    letras_variantes = {
+        "a": ["á", "ã", "â", "ä", "à"],
+        "e": ["é", "ê", "ë"],
+        "i": ["í", "î", "ï"],
+        "o": ["ó", "õ", "ô", "ö"],
+        "u": ["ú", "û", "ü"],
+        "c": ["ç"],
+        "n": ["ñ"],
+        "s": ["ß"],
+        "y": ["ý", "ÿ"],
+        "z": ["ž"],
+    }
     if letra_minuscula in palavra_minuscula:
+        inputs.append(letra_minuscula)
+        inputs.sort()
         statusDaPalavra[letra_minuscula][0] = True
-        letras_variantes = {
-            "a": ["á", "ã", "â", "ä", "à"],
-            "e": ["é", "ê", "ë"],
-            "i": ["í", "î", "ï"],
-            "o": ["ó", "õ", "ô", "ö"],
-            "u": ["ú", "û", "ü"],
-            "c": ["ç"],
-            "n": ["ñ"],
-            "s": ["ß"],
-            "y": ["ý", "ÿ"],
-            "z": ["ž"],
-        }
-        for variante in letras_variantes.get(letra_minuscula, []):
+    if letra_minuscula in letras_variantes and letra_minuscula not in inputs:
+        for variante in letras_variantes[letra_minuscula]:
             if variante in palavra_minuscula:
-                print(variante)
+                inputs.append(letra_minuscula)
+                inputs.sort()
                 statusDaPalavra[variante][0] = True
+                break
+            elif variante == letras_variantes[letra_minuscula][-1]:
+                inputs.append(letra_minuscula)
+                inputs.sort()
+                tentativas -= 1
+                print(f"Tentativas restantes: {tentativas}")
     elif letra_minuscula not in inputs:
         inputs.append(letra_minuscula)
         inputs.sort()
         tentativas -= 1
         print(f"Tentativas restantes: {tentativas}")
-        print(f"\nLetras já inseridas: {inputs}")
+
+    print(f"\nLetras já inseridas: {inputs}")
 
     return [tentativas, inputs]
 
